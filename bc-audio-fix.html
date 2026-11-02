@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>006 Golden-8 Tier B &amp; C Audio Fix Review (2026-11-01)</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f1115; color: #e5e7eb; margin: 0; padding: 24px; }
+  h1, h2, h3 { color: #fff; margin-top: 0; }
+  .hub { background: #181b22; border: 1px solid #2d3340; border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge.ok { background: #064e3b; color: #6ee7b7; border: 1px solid #047857; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  th, td { padding: 10px 12px; border-bottom: 1px solid #2d3340; text-align: left; }
+  th { background: #222631; color: #9ca3af; }
+  .card { background: #181b22; border: 1px solid #2d3340; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+  .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #262b36; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .vcol { background: #111318; border: 1px solid #262b36; border-radius: 8px; padding: 10px; }
+  .vlabel { font-size: 12px; font-weight: 600; color: #d1d5db; margin-bottom: 8px; min-height: 32px; }
+  video { width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 6px; }
+  .meta { font-size: 11px; color: #9ca3af; margin-top: 6px; line-height: 1.4; word-break: break-all; }
+  code { color: #93c5fd; }
+</style>
+</head>
+<body>
+  <div class="hub">
+    <h1>006 ALL Characters — Golden 8 Tier B &amp; C Audio Speed/Sample-Rate Fix</h1>
+    <p><b>Last Updated:</b> 2026-11-02 00:11:56 &nbsp;|&nbsp; <b>Cost:</b> 0 credits (local FFmpeg audio remux) &nbsp;|&nbsp; <b>Scope:</b> Tier <code>B</code> (V05..V08) &amp; Tier <code>C</code> (V09..V20) across all 8 Golden characters (Tier <code>A</code> untouched per instruction).</p>
+    <p><b>Root Cause Fixed:</b> <code>_run_20x_fast.py</code> previously hardcoded <code>rate = 48000</code> instead of probing <code>E.sample_rate(master_p)</code>. Because 67/83 master videos use <code>22,050 Hz</code> audio and 16/83 use <code>44,100 Hz</code> audio, <code>asetrate=48000*speed</code> played 22.05 kHz tracks at <b>1.85x–2.40x speed</b> (chipmunk voice followed by ~5s of silence) and 44.1 kHz tracks <b>+8.84% too fast</b>. All 1,328 unique B &amp; C variants (1,776 character placements) have now been re-rendered with their exact native master sample rate (<code>22,050 Hz</code> or <code>44,100 Hz</code>), verified at <b>0 mismatched sample rates</b> and <b>0 trailing silence</b>.</p>
+    <table>
+      <thead>
+        <tr><th>Golden 8 Character Folder</th><th>Approved Masters</th><th>Tier B (V05..V08)</th><th>Tier C (V09..V20)</th><th>Total Fixed (B + C)</th><th>Audio QA Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>01GOLDTOP8_Aero-Papi</code></td><td>10</td><td>40</td><td>120</td><td><b>160</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+<tr><td><code>01GOLDTOP8_Aldo-Truffle-King</code></td><td>12</td><td>48</td><td>144</td><td><b>192</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+<tr><td><code>01GOLDTOP8_Alina_N10</code></td><td>22</td><td>88</td><td>264</td><td><b>352</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+<tr><td><code>01GOLDTOP8_Coach-Vesper</code></td><td>12</td><td>48</td><td>144</td><td><b>192</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+<tr><td><code>01GOLDTOP8_Commandant-Roux</code></td><td>14</td><td>56</td><td>168</td><td><b>224</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+<tr><td><code>01GOLDTOP8_Le-Cartomancien</code></td><td>14</td><td>56</td><td>168</td><td><b>224</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+<tr><td><code>01GOLDTOP8_Le-Corsaire</code></td><td>14</td><td>56</td><td>168</td><td><b>224</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+<tr><td><code>01GOLDTOP8_Maitre-Leon</code></td><td>13</td><td>52</td><td>156</td><td><b>208</b></td><td><span class='badge ok'>100% Fixed (22.05k / 44.1k Hz)</span></td></tr>
+        <tr style="background:#222631;font-weight:bold;">
+          <td>TOTAL (All 8 Golden Characters)</td><td>111 placements (83 unique)</td><td>444</td><td>1,332</td><td>1,776</td><td><span class="badge ok">1,776 / 1,776 Verified OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h2>Side-by-Side Audio &amp; Sync Verification Samples (Master V01 vs Fixed B &amp; C)</h2>
+  
+        <div class="card">
+          <div class="card-head">
+            <strong>[01/83] fw01 — 01GOLDTOP8_Aero-Papi / fw01__G8-MORNING__Aero-Papi__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 11.53s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/8f26259952646b41/V01.mp4"></video>
+              <div class="meta">SHA256: <code>8f2625995264</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.85x pitch down · trim 0.5s start / 0.0s end · zoom punch on 4.57s, 7.9s, 9.4s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw01__G8-MORNING__Aero-Papi__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw01__G8-MORNING__Aero-Papi__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=12.97s / a=12.98s | SHA: <code>833af5fd3fdd</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (1.05x pitch up · trim 0.3s start / 0.2s end · zoom 5% centre · zoom punch on 4.57s, 7.9s, 9.4s · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw01__G8-MORNING__Aero-Papi__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw01__G8-MORNING__Aero-Papi__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=10.50s / a=10.51s | SHA: <code>0b95dead122d</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (0.90x pitch down · trim 0.3s start / 0.0s end · zoom punch on 4.57s, 7.9s, 9.4s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw01__G8-MORNING__Aero-Papi__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw01__G8-MORNING__Aero-Papi__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=12.47s / a=12.48s | SHA: <code>d7324a8025a0</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[08/83] fw04 — 01GOLDTOP8_Alina_N10 / fw04__G8-MORNING__Alina__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 9.43s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/95f9b55eb07c2ed9/V01.mp4"></video>
+              <div class="meta">SHA256: <code>95f9b55eb07c</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.85x pitch down · trim 0.2s start / 0.5s end · zoom 5% centre · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw04__G8-MORNING__Alina__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw04__G8-MORNING__Alina__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=10.27s / a=10.27s | SHA: <code>fc3ca4e61859</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (0.90x pitch down · trim 0.0s start / 0.5s end · zoom 5% centre)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw04__G8-MORNING__Alina__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw04__G8-MORNING__Alina__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=9.93s / a=9.93s | SHA: <code>3b68ea148efd</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (0.95x pitch down · trim 0.2s start / 0.0s end · slow push-in · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/C/fw04__G8-MORNING__Alina__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw04__G8-MORNING__Alina__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=9.73s / a=9.72s | SHA: <code>d531dc71d394</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[09/83] fw05 — 01GOLDTOP8_Aero-Papi / fw05__G8-MORNING__Aero-Papi__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 10.07s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/345fac915bdb9add/V01.mp4"></video>
+              <div class="meta">SHA256: <code>345fac915bdb</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (1.10x pitch up · trim 0.2s start / 0.5s end · zoom punch on 4.63s · L08 Cool (blue hour))</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw05__G8-MORNING__Aero-Papi__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw05__G8-MORNING__Aero-Papi__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=8.53s / a=8.52s | SHA: <code>adc8c860432c</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (0.85x pitch down · trim 0.5s start / 0.2s end · zoom punch on 4.63s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw05__G8-MORNING__Aero-Papi__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw05__G8-MORNING__Aero-Papi__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=11.07s / a=11.02s | SHA: <code>231b6d07e134</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (1.10x pitch up · trim 0.3s start / 0.5s end · L03 Contrast +8%)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw05__G8-MORNING__Aero-Papi__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw05__G8-MORNING__Aero-Papi__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=8.47s / a=8.42s | SHA: <code>df8377815991</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[17/83] fw07 — 01GOLDTOP8_Commandant-Roux / fw07__G8-MORNING__Commandant-Roux__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 15.23s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/cbf68f5dbd26be17/V01.mp4"></video>
+              <div class="meta">SHA256: <code>cbf68f5dbd26</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.85x pitch down · trim 0.5s start / 0.0s end · zoom punch on 4.7s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Commandant-Roux/B/fw07__G8-MORNING__Commandant-Roux__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw07__G8-MORNING__Commandant-Roux__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=17.33s / a=17.33s | SHA: <code>0623f0a4288e</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (1.05x pitch up · trim 0.3s start / 0.2s end · zoom 5% centre · zoom punch on 4.7s · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Commandant-Roux/B/fw07__G8-MORNING__Commandant-Roux__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw07__G8-MORNING__Commandant-Roux__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=14.03s / a=14.03s | SHA: <code>ea6b56e243e3</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (0.90x pitch down · trim 0.3s start / 0.0s end · zoom punch on 4.7s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Commandant-Roux/C/fw07__G8-MORNING__Commandant-Roux__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw07__G8-MORNING__Commandant-Roux__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=16.60s / a=16.59s | SHA: <code>2345e707d4a4</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[24/83] fw12 — 01GOLDTOP8_Aero-Papi / fw12__G8-MORNING__Aero-Papi__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 14.00s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/1db2ad02ca976f86/V01.mp4"></video>
+              <div class="meta">SHA256: <code>1db2ad02ca97</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (1.10x pitch up · trim 0.5s start / 0.5s end · L07 Warm (golden hour))</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw12__G8-MORNING__Aero-Papi__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw12__G8-MORNING__Aero-Papi__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=11.83s / a=11.82s | SHA: <code>0b3f4000310a</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (trim 0.3s start / 0.3s end · zoom 5% centre · L07 Warm (golden hour))</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw12__G8-MORNING__Aero-Papi__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw12__G8-MORNING__Aero-Papi__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=13.40s / a=13.40s | SHA: <code>aa94f1300f17</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (0.95x pitch down · trim 0.3s start / 0.3s end · L08 Cool (blue hour))</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw12__G8-MORNING__Aero-Papi__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw12__G8-MORNING__Aero-Papi__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=14.10s / a=14.11s | SHA: <code>7ff1302e5f9b</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[31/83] fw14 — 01GOLDTOP8_Aero-Papi / fw14__G8-MORNING__Aero-Papi+Aldo-Truffle-King__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 7.77s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/1b24d362ea72971d/V01.mp4"></video>
+              <div class="meta">SHA256: <code>1b24d362ea72</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.90x pitch down · trim 0.5s start / 0.0s end · zoom 5% centre · zoom punch on 6.93s · L14 Vignette · half-speed replay)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw14__G8-MORNING__Aero-Papi+Aldo-Truffle-King__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw14__G8-MORNING__Aero-Papi+Aldo-Truffle-King__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=9.67s / a=9.67s | SHA: <code>f3de88ad73c4</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (1.10x pitch up · trim 0.3s start / 0.0s end · zoom 5% upper · slow push-in · half-speed replay)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw14__G8-MORNING__Aero-Papi+Aldo-Truffle-King__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw14__G8-MORNING__Aero-Papi+Aldo-Truffle-King__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=8.40s / a=8.39s | SHA: <code>8417f506befc</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (trim 0.5s start / 0.0s end · zoom punch on 6.93s · L09 Matte film · half-speed replay)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw14__G8-MORNING__Aero-Papi+Aldo-Truffle-King__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw14__G8-MORNING__Aero-Papi+Aldo-Truffle-King__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=8.87s / a=8.87s | SHA: <code>47bcd893ee86</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[42/83] fw24 — 01GOLDTOP8_Aldo-Truffle-King / fw24__d0001-001__Aldo-The-Truffle-King__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 12.90s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/d485877799486d3f/V01.mp4"></video>
+              <div class="meta">SHA256: <code>d48587779948</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.85x pitch down · trim 0.2s start / 0.3s end · zoom punch on 6.13s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aldo-Truffle-King/B/fw24__d0001-001__Aldo-The-Truffle-King__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw24__d0001-001__Aldo-The-Truffle-King__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=14.60s / a=14.59s | SHA: <code>1709e684ee06</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (1.05x pitch up · trim 0.2s start / 0.2s end · zoom 5% centre · zoom punch on 6.13s · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aldo-Truffle-King/B/fw24__d0001-001__Aldo-The-Truffle-King__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw24__d0001-001__Aldo-The-Truffle-King__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=11.90s / a=11.90s | SHA: <code>bf8f9265d85e</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (0.90x pitch down · trim 0.2s start / 0.0s end · zoom punch on 6.13s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aldo-Truffle-King/C/fw24__d0001-001__Aldo-The-Truffle-King__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw24__d0001-001__Aldo-The-Truffle-King__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=14.10s / a=14.11s | SHA: <code>f59ddd2d47df</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[48/83] fw25 — 01GOLDTOP8_Aero-Papi / fw25__d0001-021__Freja+Aero-Papi-The-Sunset-Pilot__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 7.10s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/c5eb179bcb462c72/V01.mp4"></video>
+              <div class="meta">SHA256: <code>c5eb179bcb46</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (1.05x pitch up · trim 0.2s start / 0.2s end · zoom 5% upper · zoom punch on 3.45s, 5.65s · mirror · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw25__d0001-021__Freja+Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw25__d0001-021__Freja+Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=6.37s / a=6.38s | SHA: <code>1f3da7969066</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (0.95x pitch down · trim 0.2s start / 0.5s end · zoom 10% centre · zoom punch on 3.45s, 5.65s · L08 Cool (blue hour) · half-speed replay)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw25__d0001-021__Freja+Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw25__d0001-021__Freja+Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=8.33s / a=8.34s | SHA: <code>380ba7feb3b0</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (1.10x pitch up · trim 0.2s start / 0.3s end · L03 Contrast +8%)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw25__d0001-021__Freja+Aero-Papi-The-Sunset-Pilot__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw25__d0001-021__Freja+Aero-Papi-The-Sunset-Pilot__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=6.00s / a=6.00s | SHA: <code>cb221316af45</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[56/83] fw26 — 01GOLDTOP8_Alina_N10 / fw26__d0001-025__Alina__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 19.10s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/cf14554a48ae343d/V01.mp4"></video>
+              <div class="meta">SHA256: <code>cf14554a48ae</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.85x pitch down · trim 0.5s start / 0.2s end · zoom 10% centre · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw26__d0001-025__Alina__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw26__d0001-025__Alina__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=21.63s / a=21.65s | SHA: <code>88e60d680ea1</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (1.10x pitch up · trim 0.5s start / 0.5s end · zoom 10% upper · zoom punch on 14.2s, 17.5s · mirror · L08 Cool (blue hour))</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw26__d0001-025__Alina__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw26__d0001-025__Alina__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=16.47s / a=16.45s | SHA: <code>a2c815f19131</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (0.95x pitch down · trim 0.5s start / 0.5s end · zoom punch on 14.2s, 17.5s · mirror · L14 Vignette · half-speed replay)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/C/fw26__d0001-025__Alina__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw26__d0001-025__Alina__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=20.67s / a=20.65s | SHA: <code>67800881bf27</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[62/83] fw28 — 01GOLDTOP8_Aero-Papi / fw28__d0001-039__Aero-Papi-The-Sunset-Pilot__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 22050 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 22050 Hz, 22.57s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/d05d998135e2a673/V01.mp4"></video>
+              <div class="meta">SHA256: <code>d05d998135e2</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (1.10x pitch up · trim 0.0s start / 0.2s end · zoom punch on 3.0s · mirror · L08 Cool (blue hour))</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw28__d0001-039__Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw28__d0001-039__Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V05.mp4</code><br>SR: <b>22050 Hz</b> | v=20.37s / a=20.33s | SHA: <code>60b642225200</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (0.85x pitch down · trim 0.2s start / 0.5s end · zoom 5% centre · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw28__d0001-039__Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw28__d0001-039__Aero-Papi-The-Sunset-Pilot__with_trend_sound__B_V06.mp4</code><br>SR: <b>22050 Hz</b> | v=25.77s / a=25.73s | SHA: <code>8145ffd583b8</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (0.95x pitch down · trim 0.2s start / 0.0s end · slow push-in · mirror · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw28__d0001-039__Aero-Papi-The-Sunset-Pilot__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw28__d0001-039__Aero-Papi-The-Sunset-Pilot__with_trend_sound__C_V09.mp4</code><br>SR: <b>22050 Hz</b> | v=23.53s / a=23.54s | SHA: <code>38aa09e4fddf</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[68/83] fw29 — 01GOLDTOP8_Alina_N10 / fw29__G8-r08__Alina+Le-Cartomancien__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 44100 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 44100 Hz, 7.03s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/4972811b6966c1ac/V01.mp4"></video>
+              <div class="meta">SHA256: <code>4972811b6966</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (1.10x pitch up · trim 0.0s start / 0.5s end · zoom punch on 2.633s · mirror · L08 Cool (blue hour) · half-speed replay)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw29__G8-r08__Alina+Le-Cartomancien__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw29__G8-r08__Alina+Le-Cartomancien__with_trend_sound__B_V05.mp4</code><br>SR: <b>44100 Hz</b> | v=7.53s / a=7.54s | SHA: <code>f3f48c05aafd</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (0.85x pitch down · trim 0.2s start / 0.3s end · zoom punch on 2.633s · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw29__G8-r08__Alina+Le-Cartomancien__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw29__G8-r08__Alina+Le-Cartomancien__with_trend_sound__B_V06.mp4</code><br>SR: <b>44100 Hz</b> | v=7.70s / a=7.69s | SHA: <code>11e020380acc</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (1.10x pitch up · trim 0.2s start / 0.2s end · mirror · L03 Contrast +8% · half-speed replay)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/C/fw29__G8-r08__Alina+Le-Cartomancien__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw29__G8-r08__Alina+Le-Cartomancien__with_trend_sound__C_V09.mp4</code><br>SR: <b>44100 Hz</b> | v=7.63s / a=7.63s | SHA: <code>b27c0f4a73eb</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[69/83] fw30 — 01GOLDTOP8_Aero-Papi / fw30__G8-r08__Aero-Papi+Alina__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 44100 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 44100 Hz, 13.73s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/7e3c347055a81cbf/V01.mp4"></video>
+              <div class="meta">SHA256: <code>7e3c347055a8</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.90x pitch down · trim 0.2s start / 0.0s end · zoom punch on 3.133s, 6.733s, 10.4s · L08 Cool (blue hour))</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw30__G8-r08__Aero-Papi+Alina__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw30__G8-r08__Aero-Papi+Alina__with_trend_sound__B_V05.mp4</code><br>SR: <b>44100 Hz</b> | v=15.03s / a=15.04s | SHA: <code>471d01747c99</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (1.05x pitch up · trim 0.2s start / 0.2s end · zoom 10% upper · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw30__G8-r08__Aero-Papi+Alina__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw30__G8-r08__Aero-Papi+Alina__with_trend_sound__B_V06.mp4</code><br>SR: <b>44100 Hz</b> | v=12.70s / a=12.70s | SHA: <code>ad081699ed68</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (1.05x pitch up · trim 0.0s start / 0.3s end · zoom 10% centre · L14 Vignette)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw30__G8-r08__Aero-Papi+Alina__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw30__G8-r08__Aero-Papi+Alina__with_trend_sound__C_V09.mp4</code><br>SR: <b>44100 Hz</b> | v=12.80s / a=12.79s | SHA: <code>ae2146d5dc1f</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[76/83] fw31 — 01GOLDTOP8_Alina_N10 / fw31__G8-r09__Alina__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 44100 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 44100 Hz, 9.70s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/535a851d3866dca8/V01.mp4"></video>
+              <div class="meta">SHA256: <code>535a851d3866</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.85x pitch down · trim 0.2s start / 0.5s end · zoom 5% centre · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw31__G8-r09__Alina__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw31__G8-r09__Alina__with_trend_sound__B_V05.mp4</code><br>SR: <b>44100 Hz</b> | v=10.60s / a=10.59s | SHA: <code>3f4b5c3198e0</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (0.90x pitch down · trim 0.0s start / 0.5s end · zoom 5% upper)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/B/fw31__G8-r09__Alina__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw31__G8-r09__Alina__with_trend_sound__B_V06.mp4</code><br>SR: <b>44100 Hz</b> | v=10.23s / a=10.22s | SHA: <code>ef62390e3eb6</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (1.10x pitch up · zoom 5% upper · slow push-in · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Alina_N10/C/fw31__G8-r09__Alina__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw31__G8-r09__Alina__with_trend_sound__C_V09.mp4</code><br>SR: <b>44100 Hz</b> | v=8.83s / a=8.82s | SHA: <code>390bcb27f41d</code></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-head">
+            <strong>[77/83] fw32 — 01GOLDTOP8_Aero-Papi / fw32__G8-r08__Alina+Aero-Papi__with_trend_sound</strong>
+            <span class="badge ok">Master &amp; B/C Audio: 44100 Hz (0 silence, synced)</span>
+          </div>
+          <div class="grid4">
+            <div class="vcol">
+              <div class="vlabel">Master Reference (V01, 1.0x, 44100 Hz, 11.93s)</div>
+              <video controls preload="metadata" src="../../_cache_20x_variants/346ea903c7ee89c7/V01.mp4"></video>
+              <div class="meta">SHA256: <code>346ea903c7ee</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V05 (0.85x pitch down · trim 0.2s start / 0.5s end · zoom 5% centre · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw32__G8-r08__Alina+Aero-Papi__with_trend_sound__B_V05.mp4"></video>
+              <div class="meta">File: <code>fw32__G8-r08__Alina+Aero-Papi__with_trend_sound__B_V05.mp4</code><br>SR: <b>44100 Hz</b> | v=13.20s / a=13.22s | SHA: <code>50172fdf2d5e</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier B — V06 (0.90x pitch down · trim 0.0s start / 0.5s end · zoom 5% upper)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/B/fw32__G8-r08__Alina+Aero-Papi__with_trend_sound__B_V06.mp4"></video>
+              <div class="meta">File: <code>fw32__G8-r08__Alina+Aero-Papi__with_trend_sound__B_V06.mp4</code><br>SR: <b>44100 Hz</b> | v=12.70s / a=12.70s | SHA: <code>7c0be5c2028a</code></div>
+            </div>
+            <div class="vcol">
+              <div class="vlabel">Fixed Tier C — V09 (1.10x pitch up · zoom 5% upper · slow push-in · L09 Matte film)</div>
+              <video controls preload="metadata" src="01GOLDTOP8_Aero-Papi/C/fw32__G8-r08__Alina+Aero-Papi__with_trend_sound__C_V09.mp4"></video>
+              <div class="meta">File: <code>fw32__G8-r08__Alina+Aero-Papi__with_trend_sound__C_V09.mp4</code><br>SR: <b>44100 Hz</b> | v=10.83s / a=10.85s | SHA: <code>c5d7661d35dc</code></div>
+            </div>
+          </div>
+        </div>
+        
+</body>
+</html>
